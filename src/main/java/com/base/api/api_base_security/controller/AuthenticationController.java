@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.base.api.api_base_security.dto.auth.AuthenticateRequest;
 import com.base.api.api_base_security.dto.auth.AuthenticateResponse;
+import com.base.api.api_base_security.persistence.entity.User;
 import com.base.api.api_base_security.services.auth.AuthenticationService;
 
 import jakarta.validation.Valid;
@@ -35,6 +36,12 @@ public class AuthenticationController {
     public ResponseEntity<Boolean> validate(@RequestParam String jwt) {
         boolean isTokenValid = authenticationService.validateToken(jwt);
         return ResponseEntity.ok(isTokenValid);
+    }
+    
+    @GetMapping("/profile")
+    public ResponseEntity<User> findMyProfile() {
+        User user = authenticationService.findLoggedInUser();
+        return ResponseEntity.ok(user);
     }
     
 

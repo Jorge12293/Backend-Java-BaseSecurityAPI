@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -13,6 +14,7 @@ import com.base.api.api_base_security.dto.RegisteredUser;
 import com.base.api.api_base_security.dto.SaveUser;
 import com.base.api.api_base_security.dto.auth.AuthenticateRequest;
 import com.base.api.api_base_security.dto.auth.AuthenticateResponse;
+import com.base.api.api_base_security.exception.ObjectNotFoundException;
 import com.base.api.api_base_security.persistence.entity.User;
 import com.base.api.api_base_security.services.UserService;
 
@@ -67,5 +69,18 @@ public class AuthenticationService {
             return false;
         }
     }
+
+    public User findLoggedInUser() {
+        UsernamePasswordAuthenticationToken auth = 
+            (UsernamePasswordAuthenticationToken) SecurityContextHolder.getContext().getAuthentication();
+
+        System.out.println(auth);
+            
+        String username =(String) auth.getPrincipal();
+        
+        return userService.findOneByUserName(username)
+            .orElseThrow(()-> new ObjectNotFoundException("User not found. Username: "+username));
+   
+        }
     
 }

@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import com.base.api.api_base_security.config.filter.JwtAuthenticationFilter;
 
 import lombok.AllArgsConstructor;
 
@@ -17,6 +20,7 @@ import lombok.AllArgsConstructor;
 public class HttpSecurityConfig {
 
     final private AuthenticationProvider authenticationProvider;
+    final private JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -24,6 +28,7 @@ public class HttpSecurityConfig {
             .csrf(csrfConfig->csrfConfig.disable())
             .sessionManagement(ssMagConfig->ssMagConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
+            .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .authorizeHttpRequests(authReqConfig->{
                 authReqConfig.requestMatchers(HttpMethod.POST,"/customers").permitAll();
                 authReqConfig.requestMatchers(HttpMethod.POST,"/auth/authenticate").permitAll();
