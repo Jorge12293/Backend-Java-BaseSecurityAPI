@@ -27,6 +27,8 @@ public class HttpSecurityConfig {
             .authorizeHttpRequests(authReqConfig->{
                 authReqConfig.requestMatchers(HttpMethod.POST,"/customers").permitAll();
                 authReqConfig.requestMatchers(HttpMethod.POST,"/auth/**").permitAll();
+
+                authReqConfig.anyRequest().authenticated();
             })
             .build();
         return filterChain;    
