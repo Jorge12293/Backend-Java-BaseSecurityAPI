@@ -1,4 +1,4 @@
-package com.base.api.api_base_security.config.filter;
+package com.base.api.api_base_security.config.security.filter;
 
 import java.io.IOException;
 
