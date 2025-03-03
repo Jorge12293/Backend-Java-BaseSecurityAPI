@@ -4,20 +4,19 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AuthorizeHttpRequestsConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.util.matcher.RegexRequestMatcher;
-
 import com.base.api.api_base_security.config.filter.JwtAuthenticationFilter;
-import com.base.api.api_base_security.persistence.util.Role;
 import lombok.AllArgsConstructor;
 
 @Configuration
 @EnableWebSecurity
+@EnableMethodSecurity(prePostEnabled = true)
 @AllArgsConstructor
 public class HttpSecurityConfig {
 
@@ -37,6 +36,15 @@ public class HttpSecurityConfig {
     }
 
     private void buildRequestMatchers(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
+        // Authorization Publics    
+        authReqConfig.requestMatchers(HttpMethod.POST,"/customers").permitAll();
+        authReqConfig.requestMatchers(HttpMethod.POST,"/auth/authenticate").permitAll();
+        authReqConfig.requestMatchers(HttpMethod.GET,"/auth/validate-token").permitAll();
+        authReqConfig.anyRequest().authenticated();
+    }
+
+    /*
+    private void buildRequestMatchersV2(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authReqConfig) {
         // Authorization products
         authReqConfig.requestMatchers(HttpMethod.GET,"/products")
             .hasAnyRole(Role.ADMINISTRATOR.name(),Role.ASSISTANT_ADMINISTRATOR.name());
@@ -81,4 +89,5 @@ public class HttpSecurityConfig {
 
         authReqConfig.anyRequest().authenticated();
     }
+    */
 }
