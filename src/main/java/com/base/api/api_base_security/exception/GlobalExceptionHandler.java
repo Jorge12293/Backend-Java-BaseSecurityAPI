@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -33,6 +34,21 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(apiError);
     }
 
+    @ExceptionHandler(AccessDeniedException.class)
+    public ResponseEntity<?> handlerAccessDeniedException(
+        HttpServletRequest request,
+        AccessDeniedException exception
+    ){
+        ApiError apiError = new ApiError();
+        apiError.setBackendMessage(exception.getLocalizedMessage());
+        apiError.setUrl(request.getRequestURL().toString());
+        apiError.setMethod(request.getMethod());
+        apiError.setTimestamp(LocalDateTime.now());
+        apiError.setMessage("Access denied. You do not have the necessary permissions to access this feature.");
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(apiError);
+    }
+
+
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<?> handlerMethodArgumentNotValidException(
         HttpServletRequest request,
@@ -44,10 +60,8 @@ public class GlobalExceptionHandler {
         apiError.setMethod(request.getMethod());
         apiError.setTimestamp(LocalDateTime.now());
         apiError.setMessage("Error in the request sent.");
-
         log.error(exception.getAllErrors().stream().map(each->each.getDefaultMessage())
             .collect(Collectors.toList()).toString());
-
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(apiError);
     }
 }

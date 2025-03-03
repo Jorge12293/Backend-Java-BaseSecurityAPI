@@ -25,6 +25,7 @@ public class AuthenticationController {
     
     final private AuthenticationService authenticationService;
 
+    @PreAuthorize("permitAll")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticateResponse> authenticate(
         @RequestBody @Valid AuthenticateRequest request
@@ -33,6 +34,7 @@ public class AuthenticationController {
         return ResponseEntity.ok(authenticateResponse);
     }
 
+    @PreAuthorize("permitAll")
     @GetMapping("/validate-token")
     public ResponseEntity<Boolean> validate(@RequestParam String jwt) {
         boolean isTokenValid = authenticationService.validateToken(jwt);
