@@ -56,20 +56,5 @@ public class JwtService {
     private Claims extractAllClaims(String jwt) {
         return Jwts.parser().verifyWith(generatedKey()).build()
             .parseSignedClaims(jwt).getPayload();
-    }
-    
-    /*
-    public String extractUsername(String jwt) {
-        try {
-            Claims claims = extractAllClaims(jwt);
-            String subject = claims.getSubject();
-            log.info("Extracted subject from JWT: {}", subject);
-            return subject;
-        } catch (Exception e) {
-            log.error("Error extracting username from JWT: {}", jwt, e);
-            return null;
-        }
-    }
-    */
-    
+    }    
 }
