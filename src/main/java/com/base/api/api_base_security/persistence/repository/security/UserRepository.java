@@ -1,4 +1,4 @@
-package com.base.api.api_base_security.persistence.repository;
+package com.base.api.api_base_security.persistence.repository.security;
 
 import java.util.Optional;
 

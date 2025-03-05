@@ -8,9 +8,11 @@ import org.springframework.util.StringUtils;
 
 import com.base.api.api_base_security.dto.SaveUser;
 import com.base.api.api_base_security.exception.InvalidPasswordException;
+import com.base.api.api_base_security.exception.ObjectNotFoundException;
 import com.base.api.api_base_security.persistence.entity.User;
-import com.base.api.api_base_security.persistence.repository.UserRepository;
-import com.base.api.api_base_security.persistence.util.Role;
+import com.base.api.api_base_security.persistence.entity.security.Role;
+import com.base.api.api_base_security.persistence.repository.security.UserRepository;
+import com.base.api.api_base_security.services.RoleService;
 import com.base.api.api_base_security.services.UserService;
 
 import lombok.AllArgsConstructor;
@@ -21,6 +23,7 @@ public class UserServiceImpl implements UserService {
 
     final private UserRepository userRepository;
     final private PasswordEncoder passwordEncoder;
+    final private RoleService roleService;
 
     @Override
     public User registerOneCustomer(SaveUser newUser) {
@@ -29,7 +32,9 @@ public class UserServiceImpl implements UserService {
         user.setPassword(passwordEncoder.encode(newUser.getPassword()));
         user.setName(newUser.getName());
         user.setUsername(newUser.getUsername());
-        user.setRole(Role.CUSTOMER);
+        Role defaultRole = roleService.findDefaultRole()
+            .orElseThrow(()-> new ObjectNotFoundException("Role not found. Default role"));
+        user.setRole(defaultRole);
         return userRepository.save(user);
     }
 

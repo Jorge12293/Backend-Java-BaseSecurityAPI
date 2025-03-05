@@ -1,5 +1,6 @@
 package com.base.api.api_base_security.config.security;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -11,16 +12,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import com.base.api.api_base_security.exception.ObjectNotFoundException;
-import com.base.api.api_base_security.persistence.repository.UserRepository;
-
-import lombok.AllArgsConstructor;
+import com.base.api.api_base_security.persistence.repository.security.UserRepository;
 
 
 @Configuration
-@AllArgsConstructor
 public class SecurityBeansInjector {    
 
-    final private UserRepository userRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
