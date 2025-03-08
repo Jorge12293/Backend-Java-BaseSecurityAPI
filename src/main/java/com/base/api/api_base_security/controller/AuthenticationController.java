@@ -7,11 +7,13 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.base.api.api_base_security.dto.LogoutResponse;
 import com.base.api.api_base_security.dto.auth.AuthenticateRequest;
 import com.base.api.api_base_security.dto.auth.AuthenticateResponse;
 import com.base.api.api_base_security.persistence.entity.User;
 import com.base.api.api_base_security.services.auth.AuthenticationService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,6 +43,13 @@ public class AuthenticationController {
         return ResponseEntity.ok(isTokenValid);
     }
     
+    @PostMapping("/logout")
+    public ResponseEntity<LogoutResponse> logout(HttpServletRequest request) {
+        authenticationService.logout(request);
+        return ResponseEntity.ok(new LogoutResponse("Logout ok"));
+    }
+    
+
     @PreAuthorize("hasAnyRole('ADMINISTRATOR','ASSISTANT_ADMINISTRATOR','CUSTOMER')")
     @GetMapping("/profile")
     public ResponseEntity<User> findMyProfile() {
