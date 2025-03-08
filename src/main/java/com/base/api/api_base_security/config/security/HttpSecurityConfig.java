@@ -1,5 +1,7 @@
 package com.base.api.api_base_security.config.security;
 
+import java.util.Arrays;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -10,10 +12,17 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.access.intercept.RequestAuthorizationContext;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import com.base.api.api_base_security.config.security.filter.JwtAuthenticationFilter;
 import com.base.api.api_base_security.config.security.handler.CustomAccessDeniedHandler;
 import com.base.api.api_base_security.config.security.handler.CustomAuthenticationEntryPoint;
 import lombok.AllArgsConstructor;
+
+
+import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -29,6 +38,8 @@ public class HttpSecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         SecurityFilterChain filterChain = http
+            //.cors(Customizer.withDefaults()) // Enabled Cors Default
+            .cors(withDefaults())
             .csrf(csrfConfig->csrfConfig.disable())
             .sessionManagement(ssMagConfig->ssMagConfig.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
             .authenticationProvider(authenticationProvider)
@@ -43,6 +54,21 @@ public class HttpSecurityConfig {
             })
             .build();
         return filterChain;    
+    }
+
+    @Bean
+    CorsConfigurationSource corsConfigurationSource(){
+        
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.setAllowedOrigins(Arrays.asList("https://www.google.com","http://127.0.0.1:5500"));
+        configuration.setAllowedMethods(Arrays.asList("*"));
+        configuration.setAllowedHeaders(Arrays.asList("*"));
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    
     }
 
     /*
