@@ -17,7 +17,6 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -29,7 +28,7 @@ public class AuthenticationController {
     
     final private AuthenticationService authenticationService;
 
-    @CrossOrigin
+    //@CrossOrigin
     @PreAuthorize("permitAll")
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticateResponse> authenticate(
